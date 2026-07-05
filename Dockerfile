@@ -1,11 +1,11 @@
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y git && \
-    git clone https://github.com/alexbers/mtprotoproxy && \
+RUN apt-get update && apt-get install -y git openssl && \
+    git clone https://github.com/alexbers/mtprotoproxy.git && \
     cd mtprotoproxy && \
-    pip install -r requirements.txt
+    pip install --no-cache-dir cryptg
 
 WORKDIR /app/mtprotoproxy
 
@@ -14,4 +14,4 @@ RUN echo 'PORT = 443' > config.py && \
 
 EXPOSE 443
 
-CMD ["python", "mtprotoproxy.py"]
+CMD ["python", "-u", "mtprotoproxy.py"]
