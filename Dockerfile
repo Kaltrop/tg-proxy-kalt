@@ -7,13 +7,17 @@ RUN apt-get update && apt-get install -y git openssl && \
     cd mtprotoproxy && \
     pip install --no-cache-dir cryptg
 
-# Копируем наш скрипт запуска
-COPY start.sh /app/mtprotoproxy/start.sh
-RUN chmod +x /app/mtprotoproxy/start.sh
-
 WORKDIR /app/mtprotoproxy
 
 EXPOSE 443
 
-# Запускаем наш скрипт
-CMD ["/app/mtprotoproxy/start.sh"]
+# Запускаем прокси, передавая секреты напрямую в python
+CMD python -u mtprotoproxy.py \
+    -p 443 \
+    -s ca23d2994689493d603cc93bf38e3a40 \
+    -s ca23d2994689493d603cc93bf38e3a40\ngirl \
+    -s ca23d2994689493d603cc93bf38e3a40\nbro \
+    -s ca23d2994689493d603cc93bf38e3a40\nmom \
+    -s ca23d2994689493d603cc93bf38e3a40\nminion \
+    -s ca23d2994689493d603cc93bf38e3a40\nanonim \
+    --tls-domain www.google.com
