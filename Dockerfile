@@ -7,12 +7,9 @@ RUN apt-get update && apt-get install -y git openssl && \
     cd mtprotoproxy && \
     pip install --no-cache-dir cryptg
 
-# Копируем наш патч
-COPY patch_config.py /app/mtprotoproxy/patch_config.py
-
 WORKDIR /app/mtprotoproxy
 
 EXPOSE 443
 
-# При запуске: патчим конфиг (подставляем переменные Render), затем стартуем прокси
-CMD python patch_config.py && exec python -u mtprotoproxy.py
+# Запускаем прокси, передавая секреты прямо в команде через переменные окружения
+CMD python -c "import os; s = os.environ.get('SECRET', ''); t = os.environ.get('TLS_DOMAIN', 'www.google.com'); print(f'PORT = 443\nWS_MODE = True\nTLS_DOMAIN = \"{t}\"\nSECRET = \"{s}\"')" > config.py && exec python -u mtprotoproxy.py
