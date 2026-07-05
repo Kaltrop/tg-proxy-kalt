@@ -7,13 +7,12 @@ RUN apt-get update && apt-get install -y git openssl && \
     cd mtprotoproxy && \
     pip install --no-cache-dir cryptg
 
-WORKDIR /app/mtprotoproxy
+# Копируем наш патч
+COPY patch_config.py /app/mtprotoproxy/patch_config.py
 
-# Копируем скрипт для генерации config.py
-COPY generate_config.sh /generate_config.sh
-RUN chmod +x /generate_config.sh
+WORKDIR /app/mtprotoproxy
 
 EXPOSE 443
 
-# При запуске контейнера сначала генерируем config.py из переменных окружения Render, а потом запускаем прокси
-ENTRYPOINT ["/bin/bash", "-c", "/generate_config.sh && exec python -u mtprotoproxy.py"]
+# При запуске: патчим конфиг (подставляем переменные Render), затем стартуем прокси
+CMD python patch_config.py && exec python -u mtprotoproxy.py
