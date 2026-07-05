@@ -6,7 +6,7 @@ echo "WS_MODE = True" >> config.py
 
 # Если переменная SECRET существует, используем её, иначе — дефолтный ключ
 if [ -n "$SECRET" ]; then
-  echo "SECRET = '${SECRET}'" >> config.py
+  echo "SECRET = '"${SECRET}"'" >> config.py
 else
   echo "SECRET = '00000000000000000000000000000000'" >> config.py
 fi
