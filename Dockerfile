@@ -9,9 +9,12 @@ RUN apt-get update && apt-get install -y git openssl && \
 
 WORKDIR /app/mtprotoproxy
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod +x /entrypoint.sh
+RUN echo 'PORT = 443' > config.py && \
+    echo 'WS_MODE = True' >> config.py && \
+    echo 'TLS_DOMAIN = "www.google.com"' >> config.py && \
+    echo 'import os' >> config.py && \
+    echo 'SECRET = os.environ.get("SECRET", "00000000000000000000000000000000")' >> config.py
 
 EXPOSE 443
 
-ENTRYPOINT ["/entrypoint.sh"]
+CMD ["python", "-u", "mtprotoproxy.py"]
