@@ -7,13 +7,12 @@ RUN apt-get update && apt-get install -y git openssl && \
     git clone https://github.com/alexbers/mtprotoproxy.git && \
     cd mtprotoproxy && \
     pip install --no-cache-dir cryptg && \
-    # Заменяем секреты
     sed -i 's/00000000000000000000000000000000/ca23d2994689493d603cc93bf38e3a40/g' mtprotoproxy.py && \
     sed -i 's/00000000000000000000000000000001/ca23d2994689493d603cc93bf38e3a40/g' mtprotoproxy.py && \
-    # МЕНЯЕМ МАСКИРУЮЩИЙ ДОМЕН НА БОЛЕЕ НЕПОПУЛЯРНЫЙ
+    # Меняем маскирующий домен (опционально, но рекомендую)
     sed -i 's/TLS_DOMAIN = "www.google.com"/TLS_DOMAIN = "www.cloudflare.com"/g' mtprotoproxy.py
 
-# Создаем простой HTTP сервер для Render
+# Создаем HTTP сервер для Render
 RUN echo '#!/usr/bin/env python3\n\
 from http.server import HTTPServer, BaseHTTPRequestHandler\n\
 import threading\n\
@@ -40,4 +39,5 @@ RUN chmod +x /app/http_server.py
 EXPOSE 8080 443
 
 # Запускаем оба сервера
-CMD python3 /app/http_server.py & python3 /app/mtprotoproxy/mtprotoproxy.py
+# ВАЖНО: заставляем MTProto слушать на порту $PORT
+CMD python3 /app/http_server.py & python3 /app/mtprotoproxy/mtprotoproxy.py --port $PORT
