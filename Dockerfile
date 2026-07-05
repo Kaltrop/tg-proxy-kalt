@@ -2,17 +2,21 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Обновляем пакеты и устанавливаем зависимости
 RUN apt-get update && apt-get install -y git openssl && \
-    git clone https://github.com/telegeography/mtprotoproxy.git && \
+    git clone https://github.com/alexbers/mtprotoproxy.git && \
     cd mtprotoproxy && \
-    pip install --no-cache-dir cryptg
+    pip install --no-cache-dir cryptography cryptg
 
 WORKDIR /app/mtprotoproxy
 
-EXPOSE 443
+# Генерируем файл конфигурации с НАСТОЯЩИМИ секретами из переменной окружения SECRET,
+# которую мы зададим в Render
+RUN echo 'import os' > config.py && \
+    echo 'PORT = int(os.environ.get("PORT", 443))' >> config.py && \
+    echo 'TLS_DOMAIN = os.environ.get("TLS_DOMAIN", "www.google.com")' >> config.py && \
+    echo 'SECRET = os.environ["SECRET"]' >> config.py
 
-ENV WS_MODE=True
-ENV TLS_DOMAIN=www.google.com
-ENV SECRET="ca23d2994689493d603cc93bf38e3a40 ca23d2994689493d603cc93bf38e3a40\ngirl ca23d2994689493d603cc93bf38e3a40\nbro ca23d2994689493d603cc93bf38e3a40\nmom ca23d2994689493d603cc93bf38e3a40\nminion ca23d2994689493d603cc93bf38e3a40\nanonim"
+EXPOSE 443
 
 CMD ["python", "-u", "mtprotoproxy.py"]
