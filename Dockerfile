@@ -2,6 +2,9 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
+# Эта строка сломает кэш при следующей сборке
+ARG CACHEBUST=1
+
 RUN apt-get update && apt-get install -y git openssl && \
     git clone https://github.com/alexbers/mtprotoproxy.git && \
     cd mtprotoproxy && \
