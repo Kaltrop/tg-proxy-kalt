@@ -9,12 +9,11 @@ RUN apt-get update && apt-get install -y git openssl && \
 
 WORKDIR /app/mtprotoproxy
 
-RUN echo 'PORT = 443' > config.py && \
-    echo 'WS_MODE = True' >> config.py && \
-    echo 'TLS_DOMAIN = "www.google.com"' >> config.py && \
-    echo 'import os' >> config.py && \
-    echo 'SECRET = os.environ.get("SECRET", "00000000000000000000000000000000")' >> config.py
+# Копируем скрипт для генерации config.py
+COPY generate_config.sh /generate_config.sh
+RUN chmod +x /generate_config.sh
 
 EXPOSE 443
 
-CMD ["python", "-u", "mtprotoproxy.py"]
+# При запуске контейнера сначала генерируем config.py из переменных окружения Render, а потом запускаем прокси
+ENTRYPOINT ["/bin/bash", "-c", "/generate_config.sh && exec python -u mtprotoproxy.py"]
