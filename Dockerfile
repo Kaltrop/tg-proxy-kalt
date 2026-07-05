@@ -12,6 +12,6 @@ WORKDIR /app/mtprotoproxy
 EXPOSE 443
 
 # Секреты передаются в команду ОДНОЙ строкой через переменную окружения
-ENV SECRETS="ca23d2994689493d603cc93bf38e3a40 ca23d2994689493d603cc93bf38e3a40\ngirl ca23d2994689493d603cc93bf38e3a40\nbro ca23d2994689493d603cc93bf38e3a40\nmom ca23d2994689493d603cc93bf38e3a40\nminion ca23d2994689493d603cc93bf38e3a40\nanonim"
+ENV SECRET="ca23d2994689493d603cc93bf38e3a40 ca23d2994689493d603cc93bf38e3a40\ngirl ca23d2994689493d603cc93bf38e3a40\nbro ca23d2994689493d603cc93bf38e3a40\nmom ca23d2994689493d603cc93bf38e3a40\nminion ca23d2994689493d603cc93bf38e3a40\nanonim"
 
 CMD python -u mtprotoproxy.py
